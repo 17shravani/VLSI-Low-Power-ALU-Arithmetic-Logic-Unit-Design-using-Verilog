@@ -1,0 +1,15 @@
+# Icarus Verilog build outputs
+simulation/*.vvp
+
+# Waveform files
+waveforms/*.vcd
+*.vcd
+
+# Synthesis output reports (can be generated locally)
+reports/synth_alu.v
+reports/synth_alu.json
+
+# OS files
+Thumbs.db
+.DS_Store
+desktop.ini

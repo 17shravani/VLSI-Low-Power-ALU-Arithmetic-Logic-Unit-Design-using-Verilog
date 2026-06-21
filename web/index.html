@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Low-Power ALU Interactive Dashboard</title>
+    <meta name="description" content="An interactive web dashboard to simulate and visualize a parameterizable Low-Power ALU in Verilog, featuring operand isolation, clock-enable gating, and approximate computing.">
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="app-header">
+            <div class="logo-area">
+                <span class="chip-icon">⚡</span>
+                <div>
+                    <h1>Low-Power ALU Dashboard</h1>
+                    <p class="subtitle">Verilog RTL Simulation & Power Analysis Interface</p>
+                </div>
+            </div>
+            <div class="status-tags">
+                <span class="status-tag ver">RTL v1.2</span>
+            </div>
+        </header>
+
+        <!-- Main Workspace -->
+        <main class="app-main">
+            <!-- Sidebar Panel: Control Inputs & Simulation Trigger -->
+            <section class="panel control-panel" id="panel-controls">
+                <div class="panel-header">
+                    <h2><span class="icon">⚙️</span> RTL Input Controls</h2>
+                </div>
+                <div class="panel-body">
+                    <!-- Enable & lp_mode Switches -->
+                    <div class="switches-grid">
+                        <div class="switch-card">
+                            <label class="switch-container">
+                                <input type="checkbox" id="ctrl-en" checked>
+                                <span class="slider"></span>
+                            </label>
+                            <div class="switch-label">
+                                <strong>en (Clock Enable)</strong>
+                                <span class="desc">Gates register clocks</span>
+                            </div>
+                        </div>
+                        <div class="switch-card">
+                            <label class="switch-container">
+                                <input type="checkbox" id="ctrl-lp">
+                                <span class="slider"></span>
+                            </label>
+                            <div class="switch-label">
+                                <strong>lp_mode</strong>
+                                <span class="desc">Approx ADD & Shift-1</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Opcode Selection -->
+                    <div class="form-group">
+                        <label for="ctrl-opc"><strong>Opcode (OPC[3:0])</strong></label>
+                        <select id="ctrl-opc">
+                            <option value="0">0000: ADD (Addition)</option>
+                            <option value="1">0001: SUB (Subtraction)</option>
+                            <option value="2">0010: AND (Bitwise AND)</option>
+                            <option value="3">0011: OR (Bitwise OR)</option>
+                            <option value="4">0100: XOR (Bitwise XOR)</option>
+                            <option value="5">0101: NOR (Bitwise NOR)</option>
+                            <option value="6">0110: SLL (Shift Left Logical)</option>
+                            <option value="7">0111: SRL (Shift Right Logical)</option>
+                            <option value="8">1000: SRA (Shift Right Arithmetic)</option>
+                            <option value="9">1001: SLT (Signed Less Than)</option>
+                            <option value="10">1010: PASS A (Pass Input A)</option>
+                            <option value="11">1011: PASS B (Pass Input B)</option>
+                            <option value="12">1100: NOT A (Bitwise NOT A)</option>
+                            <option value="13">1101: INC A (Increment A)</option>
+                            <option value="14">1110: DEC A (Decrement A)</option>
+                            <option value="15">1111: NOP (No Operation)</option>
+                        </select>
+                    </div>
+
+                    <!-- Inputs A and B -->
+                    <div class="form-group">
+                        <label for="ctrl-a"><strong>Operand A (32-bit Hex)</strong></label>
+                        <div class="input-with-selector">
+                            <input type="text" id="ctrl-a" value="1A2B3C4D" placeholder="e.g. 1A2B3C4D">
+                            <button type="button" class="btn-rand-input" onclick="randomizeInput('ctrl-a')">🎲</button>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="ctrl-b"><strong>Operand B (32-bit Hex)</strong></label>
+                        <div class="input-with-selector">
+                            <input type="text" id="ctrl-b" value="4C3B2A1D" placeholder="e.g. 4C3B2A1D">
+                            <button type="button" class="btn-rand-input" onclick="randomizeInput('ctrl-b')">🎲</button>
+                        </div>
+                    </div>
+
+                    <!-- Trigger Actions -->
+                    <div class="actions-area">
+                        <button id="btn-clock" class="btn btn-primary">⚡ Trigger Clock Edge</button>
+                        <div class="btn-group">
+                            <button id="btn-random" class="btn btn-secondary">🎲 Randomize Stimulus</button>
+                            <button id="btn-reset" class="btn btn-dark">🔄 Reset Sim</button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Middle Panel: Outputs & Interactive Waveforms -->
+            <section class="main-content">
+                <!-- Outputs & Flags Block -->
+                <div class="panel output-panel">
+                    <div class="panel-header">
+                        <h2><span class="icon">💻</span> ALU Registers Output</h2>
+                    </div>
+                    <div class="panel-body outputs-grid">
+                        <div class="output-card result-card">
+                            <span class="label">Y (ALU Output Result)</span>
+                            <div class="output-val" id="out-y">00000000</div>
+                            <div class="val-bin" id="out-y-bin">00000000000000000000000000000000</div>
+                            <div class="val-dec" id="out-y-dec">Dec: 0</div>
+                        </div>
+                        <div class="flags-card">
+                            <span class="label">Status Flags</span>
+                            <div class="flags-grid">
+                                <div class="flag-led" id="flag-z">
+                                    <span class="led"></span>
+                                    <strong>Z</strong>
+                                    <span class="flag-lbl">Zero</span>
+                                </div>
+                                <div class="flag-led" id="flag-n">
+                                    <span class="led"></span>
+                                    <strong>N</strong>
+                                    <span class="flag-lbl">Negative</span>
+                                </div>
+                                <div class="flag-led" id="flag-c">
+                                    <span class="led"></span>
+                                    <strong>C</strong>
+                                    <span class="flag-lbl">Carry</span>
+                                </div>
+                                <div class="flag-led" id="flag-v">
+                                    <span class="led"></span>
+                                    <strong>V</strong>
+                                    <span class="flag-lbl">Overflow</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Vivado-Style Waveform Viewer -->
+                <div class="panel wave-panel">
+                    <div class="panel-header wave-header">
+                        <h2><span class="icon">📈</span> Vivado 2023.2 Waveform Viewer (Dynamic)</h2>
+                        <span class="time-scale" id="time-indicator">Current Time: 0 ns</span>
+                    </div>
+                    <div class="panel-body wave-body-container">
+                        <div class="waveform-viewer" id="waveform-viewer">
+                            <canvas id="wave-canvas"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right Panel: Power Savings & Interactive Logic Schematic -->
+            <section class="panel right-panel">
+                <!-- Power Savings Gauge -->
+                <div class="sub-panel power-panel">
+                    <div class="panel-header">
+                        <h2><span class="icon">🔋</span> Dynamic Power Savings Analysis</h2>
+                    </div>
+                    <div class="panel-body">
+                        <div class="power-gauge-area">
+                            <div class="power-bar-chart">
+                                <div class="power-bar-wrapper">
+                                    <div class="bar-container"><div class="bar baseline-bar" id="p-bar-base"></div></div>
+                                    <span class="bar-lbl">Baseline</span>
+                                </div>
+                                <div class="power-bar-wrapper">
+                                    <div class="bar-container"><div class="bar gated-bar" id="p-bar-gate"></div></div>
+                                    <span class="bar-lbl">Clock Gated</span>
+                                </div>
+                                <div class="power-bar-wrapper">
+                                    <div class="bar-container"><div class="bar isolated-bar" id="p-bar-iso"></div></div>
+                                    <span class="bar-lbl">Operand Isolated</span>
+                                </div>
+                                <div class="power-bar-wrapper">
+                                    <div class="bar-container"><div class="bar optimized-bar" id="p-bar-opt"></div></div>
+                                    <span class="bar-lbl">Gated+Isolated</span>
+                                </div>
+                            </div>
+                            <div class="power-stats">
+                                <div class="stat-row">
+                                    <span>Current Power consumption:</span>
+                                    <strong id="stat-power">145 µW</strong>
+                                </div>
+                                <div class="stat-row highlight">
+                                    <span>Dynamic Power Reduction:</span>
+                                    <strong id="stat-savings">0%</strong>
+                                </div>
+                                <p class="power-note">*Estimated dynamic switching activity factor \(\alpha\) reduction based on vectors.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Operand Isolation Animated Diagram -->
+                <div class="sub-panel schematic-panel">
+                    <div class="panel-header">
+                        <h2><span class="icon">🔌</span> Interactive Operand Isolation Diagram</h2>
+                    </div>
+                    <div class="panel-body schematic-body">
+                        <div class="schematic-container">
+                            <svg viewBox="0 0 400 350" id="schematic-svg">
+                                <!-- Operands Inputs -->
+                                <rect x="10" y="80" width="60" height="30" rx="3" class="schem-node input-node" />
+                                <text x="40" y="100" class="node-txt">A [31:0]</text>
+                                
+                                <rect x="10" y="240" width="60" height="30" rx="3" class="schem-node input-node" />
+                                <text x="40" y="260" class="node-txt">B [31:0]</text>
+
+                                <!-- Opcode Decoder -->
+                                <rect x="120" y="15" width="80" height="30" rx="3" class="schem-node decoder-node" />
+                                <text x="160" y="34" class="node-txt dec-txt">OPC Decoder</text>
+
+                                <!-- Gates / Isolation Blocks -->
+                                <g id="gate-adder">
+                                    <line x1="70" y1="95" x2="160" y2="95" class="wire-line wire-iso" id="wire-a-add" />
+                                    <line x1="70" y1="245" x2="160" y2="245" class="wire-line wire-iso" id="wire-b-add" />
+                                    <rect x="160" y="80" width="80" height="40" rx="3" class="schem-node functional-node isolated" id="node-adder" />
+                                    <text x="200" y="105" class="node-txt">Adder/Sub</text>
+                                </g>
+
+                                <g id="gate-logic">
+                                    <line x1="70" y1="95" x2="160" y2="155" class="wire-line wire-iso" id="wire-a-log" />
+                                    <line x1="70" y1="245" x2="160" y2="175" class="wire-line wire-iso" id="wire-b-log" />
+                                    <rect x="160" y="145" width="80" height="40" rx="3" class="schem-node functional-node isolated" id="node-logic" />
+                                    <text x="200" y="170" class="node-txt">Logic Unit</text>
+                                </g>
+
+                                <g id="gate-shifter">
+                                    <line x1="70" y1="95" x2="160" y2="215" class="wire-line wire-iso" id="wire-a-sh" />
+                                    <line x1="70" y1="255" x2="160" y2="235" class="wire-line wire-iso" id="wire-b-sh" />
+                                    <rect x="160" y="210" width="80" height="40" rx="3" class="schem-node functional-node isolated" id="node-shifter" />
+                                    <text x="200" y="235" class="node-txt">Shifter</text>
+                                </g>
+
+                                <g id="gate-comparator">
+                                    <line x1="70" y1="95" x2="160" y2="285" class="wire-line wire-iso" id="wire-a-comp" />
+                                    <line x1="70" y1="255" x2="160" y2="295" class="wire-line wire-iso" id="wire-b-comp" />
+                                    <rect x="160" y="275" width="80" height="40" rx="3" class="schem-node functional-node isolated" id="node-comparator" />
+                                    <text x="200" y="300" class="node-txt">Comparator</text>
+                                </g>
+
+                                <!-- Output Multiplexer -->
+                                <polygon points="300,70 300,310 330,260 330,120" class="schem-node mux-node" />
+                                <text x="315" y="195" class="node-txt vertical-txt">Y-MUX</text>
+
+                                <!-- Connection from blocks to MUX -->
+                                <line x1="240" y1="100" x2="300" y2="100" class="wire-line wire-iso" id="wire-out-add" />
+                                <line x1="240" y1="165" x2="300" y2="165" class="wire-line wire-iso" id="wire-out-log" />
+                                <line x1="240" y1="230" x2="300" y2="230" class="wire-line wire-iso" id="wire-out-sh" />
+                                <line x1="240" y1="295" x2="300" y2="295" class="wire-line wire-iso" id="wire-out-comp" />
+
+                                <!-- Mux Output wire to register -->
+                                <line x1="320" y1="190" x2="350" y2="190" class="wire-line wire-iso" id="wire-mux-out" />
+                                <rect x="350" y="175" width="40" height="30" rx="2" class="schem-node reg-node" id="node-reg" />
+                                <text x="370" y="195" class="node-txt">Reg</text>
+                                
+                                <!-- Decoder Enable control wires to functional switches -->
+                                <path d="M 160,45 L 160,70" class="ctrl-wire-line" />
+                                <path d="M 170,45 L 170,135" class="ctrl-wire-line" />
+                                <path d="M 180,45 L 180,200" class="ctrl-wire-line" />
+                                <path d="M 190,45 L 190,265" class="ctrl-wire-line" />
+                            </svg>
+                        </div>
+                        <div class="legend">
+                            <span class="legend-item"><span class="legend-dot active"></span> Active switching (Toggling)</span>
+                            <span class="legend-item"><span class="legend-dot idle"></span> Isolated (Zero/Static)</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- MathJax for rendering equations -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/mathjax.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,22 @@
+# scripts/synth.ys
+# Yosys synthesis script for Low-Power ALU
+
+# 1. Read input RTL files
+read_verilog rtl/adder.v
+read_verilog rtl/alu.v
+
+# 2. Elaborate design hierarchy
+hierarchy -check -top alu
+
+# 3. Perform standard synthesis flow
+# This command optimizes the logic and maps it to generic gates.
+synth -top alu
+
+# 4. Generate cell/gate utilization report
+stat
+
+# 5. Write synthesized netlist (for gate-level simulation)
+write_verilog reports/synth_alu.v
+
+# 6. Write JSON netlist (for visual analysis tools)
+write_json reports/synth_alu.json

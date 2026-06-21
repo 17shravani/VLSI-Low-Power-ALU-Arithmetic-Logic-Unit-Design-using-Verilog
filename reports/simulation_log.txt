@@ -1,0 +1,44 @@
+--------------------------------------------------
+   STARTING LOW-POWER ALU SELF-CHECKING TESTBENCH  
+--------------------------------------------------
+
+[TEST 1] Verifying Enable Signal Gating (Register Stability)...
+SUCCESS: Output remained stable (Y = 00000000) when enable was 0.
+
+[TEST 2] Verifying All 16 Operations in Baseline Mode (lp_mode=0)...
+Opcode 0000 (ADD    ): A=7FFFFFFF, B=00000001 -> Y=80000000  Z=0 N=1
+Opcode 0001 (SUB    ): A=80000000, B=00000001 -> Y=7FFFFFFF  Z=0 N=0
+Opcode 0010 (AND    ): A=12345678, B=9ABCDEF0 -> Y=12345670  Z=0 N=0
+Opcode 0011 (OR     ): A=12345678, B=9ABCDEF0 -> Y=9ABCDEF8  Z=0 N=1
+Opcode 0100 (XOR    ): A=12345678, B=9ABCDEF0 -> Y=88888888  Z=0 N=1
+Opcode 0101 (NOR    ): A=12345678, B=9ABCDEF0 -> Y=65432107  Z=0 N=0
+Opcode 0110 (SLL    ): A=F000000F, B=00000004 -> Y=000000F0  Z=0 N=0
+Opcode 0111 (SRL    ): A=F000000F, B=00000004 -> Y=0F000000  Z=0 N=0
+Opcode 1000 (SRA    ): A=F000000F, B=00000004 -> Y=FF000000  Z=0 N=1
+Opcode 1001 (SLT    ): A=80000000, B=7FFFFFFF -> Y=00000001  Z=0 N=0
+Opcode 1010 (PASS A ): A=12345678, B=9ABCDEF0 -> Y=12345678  Z=0 N=0
+Opcode 1011 (PASS B ): A=12345678, B=9ABCDEF0 -> Y=9ABCDEF0  Z=0 N=1
+Opcode 1100 (NOT A  ): A=12345678, B=9ABCDEF0 -> Y=EDCBA987  Z=0 N=1
+Opcode 1101 (INC A  ): A=FFFFFFFF, B=00000000 -> Y=00000000  Z=1 N=0
+Opcode 1110 (DEC A  ): A=00000000, B=00000000 -> Y=FFFFFFFF  Z=0 N=1
+Opcode 1111 (NOP    ): A=12345678, B=9ABCDEF0 -> Y=00000000  Z=1 N=0
+Baseline operations check complete. Errors so far: 0
+
+[TEST 3] Verifying Shifter Masking in lp_mode=1...
+SUCCESS: SLL shift amount was restricted to 1 bit (Y = FFFFFFFE).
+SUCCESS: SRL shift amount was restricted to 1 bit (Y = 7FFFFFFF).
+
+[TEST 4] Verifying LSB Approximation in lp_mode=1...
+SUCCESS: LSB Approximation active. B lower 4 bits masked. Y = 00000010
+
+[TEST 5] Verifying Carry (C) and Overflow (V) Flags...
+SUCCESS: Unsigned Carry flag asserted correctly (C = 1, V = 0).
+SUCCESS: Signed Overflow flag asserted correctly (C = 0, V = 1).
+SUCCESS: SUB Signed Overflow flag asserted correctly (V = 1).
+
+[TEST 6] Running 100 Randomized Operations for VCD analysis...
+Random operations executed under baseline and low-power modes.
+
+--------------------------------------------------
+       TESTBENCH COMPLETED SUCCESSFULLY (0 ERRORS) 
+--------------------------------------------------
