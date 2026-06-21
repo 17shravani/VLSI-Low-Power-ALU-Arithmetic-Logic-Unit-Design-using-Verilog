@@ -2,24 +2,25 @@
 
 /* --- Custom Variables & Theme (Vivado Dark Theme Vibe) --- */
 :root {
-    --bg-dark: #0a0d12;
-    --bg-panel: #161b22;
-    --bg-input: #0d1117;
-    --border-color: #30363d;
+    --bg-dark: #07090e;
+    --bg-panel: #0d1117;
+    --bg-input: #090c10;
+    --border-color: #21262d;
+    --border-color-active: #30363d;
     --text-primary: #c9d1d9;
     --text-secondary: #8b949e;
     
     /* Signal Color Palette */
-    --color-clk: #00FF66;       /* Bright Green */
+    --color-clk: #39FF14;       /* Neon green */
     --color-ctrl: #FFD700;      /* Bright Yellow */
     --color-flag: #00E5FF;      /* Neon Blue */
-    --color-bus: #00FF66;       /* Bright Green data bus */
+    --color-bus: #58a6ff;       /* Blue */
     --color-idle: #30363d;      /* Flat Grey/Slate for isolated nodes */
     --color-text-node: #ffffff;
     
-    --glow-clk: 0 0 8px rgba(0, 255, 102, 0.4);
-    --glow-ctrl: 0 0 8px rgba(255, 215, 0, 0.4);
-    --glow-flag: 0 0 10px rgba(0, 229, 255, 0.6);
+    --glow-clk: 0 0 10px rgba(57, 255, 20, 0.5);
+    --glow-ctrl: 0 0 10px rgba(255, 215, 0, 0.4);
+    --glow-flag: 0 0 12px rgba(0, 229, 255, 0.6);
 }
 
 /* --- Global Reset & Fonts --- */
@@ -34,7 +35,7 @@ body {
     color: var(--text-primary);
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
     line-height: 1.5;
-    padding: 16px;
+    padding: 12px;
     height: 100vh;
     overflow: hidden;
 }
@@ -43,20 +44,20 @@ body {
 .app-container {
     display: flex;
     flex-direction: column;
-    height: calc(100vh - 32px);
-    gap: 16px;
+    height: calc(100vh - 24px);
+    gap: 12px;
 }
 
 /* Header */
 .app-header {
     background-color: var(--bg-panel);
     border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 12px 24px;
+    border-radius: 6px;
+    padding: 10px 18px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
 
 .logo-area {
@@ -66,20 +67,20 @@ body {
 }
 
 .chip-icon {
-    font-size: 28px;
-    background: linear-gradient(135deg, #1f6feb, #00FF66);
+    font-size: 24px;
+    background: linear-gradient(135deg, #1f6feb, var(--color-clk));
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
 }
 
 .app-header h1 {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 800;
     color: #ffffff;
 }
 
 .subtitle {
-    font-size: 12px;
+    font-size: 11px;
     color: var(--text-secondary);
 }
 
@@ -89,64 +90,81 @@ body {
 }
 
 .status-tag {
-    font-size: 11px;
+    font-size: 10px;
     font-weight: 700;
-    padding: 4px 8px;
+    padding: 3px 6px;
     border-radius: 4px;
     letter-spacing: 0.5px;
-}
-
-.status-tag.ver {
-    background-color: #21262d;
-    color: var(--text-primary);
     border: 1px solid var(--border-color);
 }
 
-.status-tag.tech {
-    background: linear-gradient(135deg, rgba(31,111,235,0.2), rgba(0,255,102,0.2));
-    color: #58a6ff;
-    border: 1px solid rgba(88,166,255,0.4);
+.status-tag.ver {
+    background-color: #161b22;
+    color: var(--text-primary);
+}
+
+.status-tag.pwr {
+    background-color: rgba(57, 255, 20, 0.1);
+    color: var(--color-clk);
+    border-color: rgba(57, 255, 20, 0.4);
+    box-shadow: 0 0 6px rgba(57, 255, 20, 0.2);
+}
+
+.status-tag.pwr.sleep {
+    background-color: rgba(255, 123, 114, 0.1);
+    color: #ff7b72;
+    border-color: rgba(255, 123, 114, 0.4);
+    box-shadow: none;
 }
 
 /* Main Grid Layout */
 .app-main {
     display: grid;
-    grid-template-columns: 320px 1fr 420px;
-    gap: 16px;
+    grid-template-columns: 290px 1fr 390px;
+    gap: 12px;
     flex: 1;
-    min-height: 0; /* Important for scroll sizing */
+    min-height: 0;
 }
 
-/* Glass Panels */
+/* Panels */
 .panel {
     background-color: var(--bg-panel);
     border: 1px solid var(--border-color);
-    border-radius: 8px;
+    border-radius: 6px;
     display: flex;
     flex-direction: column;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
     min-height: 0;
 }
 
 .panel-header {
-    padding: 12px 16px;
+    padding: 8px 14px;
     border-bottom: 1px solid var(--border-color);
-    background-color: rgba(22, 27, 34, 0.6);
-    border-top-left-radius: 8px;
-    border-top-right-radius: 8px;
+    background-color: rgba(22, 27, 34, 0.5);
+    border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.panel-header.border-top {
+    border-top: 1px solid var(--border-color);
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
 }
 
 .panel-header h2 {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
     color: #ffffff;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 6px;
 }
 
 .panel-body {
-    padding: 16px;
+    padding: 12px;
     overflow-y: auto;
     flex: 1;
 }
@@ -155,26 +173,25 @@ body {
 .switches-grid {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    margin-bottom: 20px;
+    gap: 8px;
+    margin-bottom: 14px;
 }
 
 .switch-card {
     background-color: var(--bg-input);
     border: 1px solid var(--border-color);
-    border-radius: 6px;
-    padding: 10px 14px;
+    border-radius: 5px;
+    padding: 8px 12px;
     display: flex;
     align-items: center;
-    gap: 14px;
+    gap: 12px;
 }
 
-/* Toggle Switch Slider */
 .switch-container {
     position: relative;
     display: inline-block;
-    width: 44px;
-    height: 24px;
+    width: 38px;
+    height: 20px;
     flex-shrink: 0;
 }
 
@@ -192,54 +209,54 @@ body {
     right: 0;
     bottom: 0;
     background-color: #21262d;
-    transition: .3s;
-    border-radius: 24px;
+    transition: .2s;
+    border-radius: 20px;
     border: 1px solid var(--border-color);
 }
 
 .slider:before {
     position: absolute;
     content: "";
-    height: 16px;
-    width: 16px;
+    height: 12px;
+    width: 12px;
     left: 3px;
     bottom: 3px;
     background-color: var(--text-secondary);
-    transition: .3s;
+    transition: .2s;
     border-radius: 50%;
 }
 
 input:checked + .slider {
-    background-color: rgba(31, 111, 235, 0.3);
+    background-color: rgba(31, 111, 235, 0.25);
     border-color: #1f6feb;
 }
 
 input:checked + .slider:before {
-    transform: translateX(20px);
+    transform: translateX(18px);
     background-color: #58a6ff;
-    box-shadow: 0 0 8px rgba(88, 166, 255, 0.6);
+    box-shadow: 0 0 6px rgba(88, 166, 255, 0.6);
 }
 
 .switch-label strong {
     display: block;
-    font-size: 13px;
+    font-size: 12px;
     color: #ffffff;
 }
 
 .switch-label .desc {
-    font-size: 10px;
+    font-size: 9px;
     color: var(--text-secondary);
 }
 
 /* Form inputs */
 .form-group {
-    margin-bottom: 16px;
+    margin-bottom: 12px;
 }
 
 .form-group label {
     display: block;
-    font-size: 12px;
-    margin-bottom: 6px;
+    font-size: 11px;
+    margin-bottom: 4px;
     color: var(--text-secondary);
 }
 
@@ -248,58 +265,77 @@ select, input[type="text"] {
     background-color: var(--bg-input);
     border: 1px solid var(--border-color);
     color: var(--text-primary);
-    border-radius: 6px;
-    padding: 8px 12px;
-    font-size: 13px;
+    border-radius: 5px;
+    padding: 6px 10px;
+    font-size: 12px;
     font-family: 'Fira Code', monospace;
     outline: none;
-    transition: border-color 0.2s;
 }
 
 select:focus, input[type="text"]:focus {
     border-color: #1f6feb;
-    box-shadow: 0 0 5px rgba(31, 111, 235, 0.3);
 }
 
 .input-with-selector {
     display: flex;
-    gap: 8px;
+    gap: 6px;
 }
 
 .btn-rand-input {
-    background-color: #21262d;
+    background-color: #161b22;
     border: 1px solid var(--border-color);
     color: var(--text-primary);
-    border-radius: 6px;
-    width: 38px;
+    border-radius: 5px;
+    width: 32px;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 13px;
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background 0.2s;
 }
 
 .btn-rand-input:hover {
-    background-color: #30363d;
+    background-color: #21262d;
+}
+
+/* Range Sliders */
+.range-slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 4px;
+    border-radius: 2px;
+    background: #21262d;
+    outline: none;
+    margin: 8px 0;
+}
+
+.range-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    background: #58a6ff;
+    cursor: pointer;
+    box-shadow: 0 0 6px rgba(88, 166, 255, 0.6);
 }
 
 /* Buttons */
 .actions-area {
     display: flex;
     flex-direction: column;
-    gap: 8px;
-    margin-top: 16px;
+    gap: 6px;
+    margin-top: 10px;
 }
 
 .btn {
     border: none;
-    border-radius: 6px;
-    padding: 10px 16px;
+    border-radius: 5px;
+    padding: 8px 12px;
     font-weight: 700;
-    font-size: 13px;
+    font-size: 12px;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.15s;
     text-align: center;
 }
 
@@ -322,7 +358,6 @@ select:focus, input[type="text"]:focus {
 
 .btn-secondary:hover {
     background-color: #30363d;
-    border-color: #8b949e;
 }
 
 .btn-dark {
@@ -335,16 +370,21 @@ select:focus, input[type="text"]:focus {
     background-color: #b82323;
 }
 
-.btn-group {
-    display: flex;
-    gap: 8px;
+.btn-sm {
+    padding: 4px 8px;
+    font-size: 10px;
 }
 
-/* --- Outputs & Registers --- */
+.btn-group {
+    display: flex;
+    gap: 6px;
+}
+
+/* --- Center Section Layout --- */
 .main-content {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 12px;
     min-width: 0;
 }
 
@@ -354,63 +394,63 @@ select:focus, input[type="text"]:focus {
 
 .outputs-grid {
     display: grid;
-    grid-template-columns: 1fr 280px;
-    gap: 16px;
+    grid-template-columns: 1fr 260px;
+    gap: 12px;
 }
 
 .output-card {
     background-color: var(--bg-input);
     border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 14px 18px;
+    border-radius: 6px;
+    padding: 10px 14px;
     display: flex;
     flex-direction: column;
     justify-content: center;
 }
 
 .output-card .label {
-    font-size: 11px;
+    font-size: 10px;
     color: var(--text-secondary);
     font-weight: 700;
-    margin-bottom: 6px;
+    margin-bottom: 4px;
     text-transform: uppercase;
 }
 
 .output-val {
     font-family: 'Fira Code', monospace;
-    font-size: 24px;
+    font-size: 20px;
     font-weight: 700;
-    color: #00FF66;
-    text-shadow: 0 0 10px rgba(0, 255, 102, 0.3);
+    color: var(--color-clk);
+    text-shadow: 0 0 8px rgba(57, 255, 20, 0.3);
 }
 
 .val-bin {
     font-family: 'Fira Code', monospace;
-    font-size: 10px;
+    font-size: 9px;
     color: var(--text-secondary);
-    margin-top: 4px;
+    margin-top: 2px;
     word-break: break-all;
 }
 
 .val-dec {
-    font-size: 12px;
+    font-size: 11px;
     color: #58a6ff;
-    margin-top: 4px;
+    margin-top: 2px;
 }
 
 /* Flags Cards */
 .flags-card {
     background-color: var(--bg-input);
     border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 14px;
+    border-radius: 6px;
+    padding: 10px;
 }
 
 .flags-card .label {
-    font-size: 11px;
+    font-size: 10px;
     color: var(--text-secondary);
     font-weight: 700;
-    margin-bottom: 12px;
+    margin-bottom: 8px;
     text-transform: uppercase;
     display: block;
 }
@@ -418,37 +458,37 @@ select:focus, input[type="text"]:focus {
 .flags-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
+    gap: 6px;
 }
 
 .flag-led {
     display: flex;
     flex-direction: column;
     align-items: center;
-    background-color: rgba(22, 27, 34, 0.4);
+    background-color: rgba(22, 27, 34, 0.3);
     border: 1px solid var(--border-color);
-    padding: 8px 4px;
-    border-radius: 6px;
+    padding: 6px 2px;
+    border-radius: 4px;
     gap: 4px;
 }
 
 .flag-led strong {
     font-family: 'Fira Code', monospace;
-    font-size: 14px;
+    font-size: 12px;
 }
 
 .flag-lbl {
-    font-size: 9px;
+    font-size: 8px;
     color: var(--text-secondary);
 }
 
 .flag-led .led {
-    width: 10px;
-    height: 10px;
+    width: 8px;
+    height: 8px;
     border-radius: 50%;
     background-color: #21262d;
     border: 1px solid #30363d;
-    transition: all 0.3s;
+    transition: all 0.25s;
 }
 
 /* Active LED Glow states */
@@ -474,7 +514,7 @@ select:focus, input[type="text"]:focus {
 }
 
 .time-scale {
-    font-size: 11px;
+    font-size: 10px;
     color: var(--color-ctrl);
     font-family: 'Fira Code', monospace;
 }
@@ -485,6 +525,9 @@ select:focus, input[type="text"]:focus {
     overflow: hidden;
     position: relative;
     flex: 1;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+    min-height: 140px;
 }
 
 .waveform-viewer {
@@ -498,10 +541,46 @@ canvas {
     height: 100%;
 }
 
+/* --- Virtual RTL Console --- */
+.console-panel {
+    height: 150px;
+    flex-shrink: 0;
+}
+
+.console-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.console-body {
+    background-color: #05070a;
+    font-family: 'Fira Code', monospace;
+    font-size: 11px;
+    padding: 10px;
+    overflow-y: auto;
+    flex: 1;
+    border-bottom-left-radius: 6px;
+    border-bottom-right-radius: 6px;
+}
+
+.console-line {
+    margin-bottom: 4px;
+    line-height: 1.4;
+    white-space: pre-wrap;
+    word-break: break-all;
+}
+
+.system-line { color: #8b949e; }
+.test-pass { color: #56d364; }
+.test-fail { color: #ff7b72; font-weight: bold; }
+.log-line { color: #58a6ff; }
+.header-line { color: #f1e05a; font-weight: bold; }
+
 /* --- Right Panel Structures --- */
 .right-panel {
     min-height: 0;
-    gap: 16px;
+    gap: 12px;
     background: none;
     border: none;
     box-shadow: none;
@@ -510,12 +589,16 @@ canvas {
 .sub-panel {
     background-color: var(--bg-panel);
     border: 1px solid var(--border-color);
-    border-radius: 8px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+    border-radius: 6px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
 }
 
-.power-panel {
-    flex: 0 0 auto;
+.stats-panel {
+    flex-shrink: 0;
+}
+
+.clock-gating-panel {
+    flex-shrink: 0;
 }
 
 .schematic-panel {
@@ -526,7 +609,7 @@ canvas {
 }
 
 .schematic-body {
-    padding: 8px 12px;
+    padding: 6px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -549,17 +632,101 @@ canvas {
     height: auto;
 }
 
+/* --- Silicon PPA Dashboard Grid --- */
+.ppa-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+    padding: 10px;
+    background-color: rgba(22, 27, 34, 0.2);
+}
+
+.ppa-card {
+    background-color: var(--bg-input);
+    border: 1px solid var(--border-color);
+    padding: 8px 10px;
+    border-radius: 4px;
+    display: flex;
+    flex-direction: column;
+}
+
+.ppa-label {
+    font-size: 9px;
+    color: var(--text-secondary);
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.ppa-val {
+    font-family: 'Fira Code', monospace;
+    font-size: 15px;
+    font-weight: 700;
+    color: #ffffff;
+    margin: 2px 0;
+}
+
+.ppa-val.text-green {
+    color: var(--color-clk);
+    text-shadow: 0 0 6px rgba(57, 255, 20, 0.3);
+}
+
+.ppa-sub {
+    font-size: 9px;
+    color: var(--text-secondary);
+}
+
+.border-top-dash {
+    border-top: 1px dashed var(--border-color);
+}
+
+/* --- Clock Tree Gating Visualizer --- */
+.clock-body {
+    padding: 8px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.clock-tree-container {
+    width: 100%;
+}
+
+#clock-tree-svg {
+    width: 100%;
+    height: auto;
+}
+
+.wire-clk-active {
+    stroke: var(--color-clk);
+    stroke-width: 2px;
+    stroke-dasharray: 4;
+    animation: clkFlow 0.5s linear infinite;
+}
+
+.wire-clk-gated {
+    stroke: #30363d;
+    stroke-width: 2px;
+    stroke-dasharray: none;
+    animation: none;
+}
+
+@keyframes clkFlow {
+    to {
+        stroke-dashoffset: -10;
+    }
+}
+
 /* --- SVG Schematic Styling --- */
 .schem-node {
-    fill: #21262d;
+    fill: #161b22;
     stroke: var(--border-color);
-    stroke-width: 1.5px;
-    transition: all 0.3s;
+    stroke-width: 1.2px;
+    transition: all 0.25s;
 }
 
 .node-txt {
     fill: var(--text-primary);
-    font-size: 10px;
+    font-size: 9px;
     font-family: 'Inter', sans-serif;
     text-anchor: middle;
     pointer-events: none;
@@ -571,40 +738,46 @@ canvas {
 }
 
 .decoder-node {
-    fill: #2d2613;
+    fill: #272213;
     stroke: var(--color-ctrl);
 }
 
 .input-node {
-    fill: #14241d;
+    fill: #0d1a14;
     stroke: var(--color-clk);
 }
 
 .functional-node {
-    stroke-width: 1.5px;
-    transition: fill 0.3s, stroke 0.3s;
+    stroke-width: 1.2px;
+    transition: fill 0.25s, stroke 0.25s;
 }
 
 .functional-node.active-block {
-    fill: #14241d;
+    fill: #0d1a14;
     stroke: var(--color-clk);
-    filter: drop-shadow(0px 0px 4px rgba(0, 255, 102, 0.4));
+    filter: drop-shadow(0px 0px 3px rgba(57, 255, 20, 0.4));
 }
 
 .functional-node.isolated {
-    fill: #161b22;
-    stroke: #30363d;
-    opacity: 0.6;
+    fill: #0d1117;
+    stroke: #21262d;
+    opacity: 0.5;
 }
 
 .mux-node {
-    fill: #13242d;
+    fill: #0a1720;
     stroke: var(--color-flag);
 }
 
 .reg-node {
-    fill: #2d1818;
+    fill: #221212;
     stroke: #ff7b72;
+}
+
+.reg-node.clk-gated-reg {
+    fill: #0d1117;
+    stroke: #30363d;
+    opacity: 0.5;
 }
 
 .vertical-txt {
@@ -614,12 +787,12 @@ canvas {
 /* Wires */
 .wire-line {
     fill: none;
-    stroke-width: 2px;
-    transition: stroke 0.3s;
+    stroke-width: 1.8px;
+    transition: stroke 0.25s;
 }
 
 .wire-iso {
-    stroke: #30363d;
+    stroke: #21262d;
 }
 
 .wire-active {
@@ -631,7 +804,7 @@ canvas {
 .ctrl-wire-line {
     fill: none;
     stroke: var(--color-ctrl);
-    stroke-width: 1.2px;
+    stroke-width: 1px;
     stroke-dasharray: 2;
     opacity: 0.8;
 }
@@ -645,22 +818,22 @@ canvas {
 .legend {
     display: flex;
     justify-content: center;
-    gap: 16px;
-    margin-top: 8px;
+    gap: 12px;
+    margin-top: 6px;
     width: 100%;
 }
 
 .legend-item {
-    font-size: 10px;
+    font-size: 9px;
     color: var(--text-secondary);
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 4px;
 }
 
 .legend-dot {
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
     border-radius: 50%;
     display: inline-block;
 }
@@ -677,16 +850,16 @@ canvas {
 /* --- Power Analysis Graphing --- */
 .power-gauge-area {
     display: flex;
-    align-items: center;
-    gap: 20px;
+    justify-content: center;
 }
 
 .power-bar-chart {
     display: flex;
-    gap: 12px;
-    height: 90px;
+    gap: 16px;
+    height: 70px;
     align-items: flex-end;
-    flex-grow: 1;
+    width: 100%;
+    padding: 0 10px;
 }
 
 .power-bar-wrapper {
@@ -697,10 +870,10 @@ canvas {
 }
 
 .bar-container {
-    width: 14px;
-    height: 70px;
-    background-color: #21262d;
-    border-radius: 3px;
+    width: 10px;
+    height: 50px;
+    background-color: #161b22;
+    border-radius: 2px;
     position: relative;
     overflow: hidden;
     border: 1px solid var(--border-color);
@@ -711,8 +884,8 @@ canvas {
     bottom: 0;
     left: 0;
     right: 0;
-    border-radius: 2px;
-    transition: height 0.4s ease-out;
+    border-radius: 1px;
+    transition: height 0.3s ease-out;
 }
 
 .baseline-bar {
@@ -742,36 +915,4 @@ canvas {
     margin-top: 4px;
     text-align: center;
     white-space: nowrap;
-}
-
-.power-stats {
-    flex: 0 0 170px;
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-}
-
-.stat-row {
-    font-size: 11px;
-    color: var(--text-secondary);
-    display: flex;
-    flex-direction: column;
-}
-
-.stat-row strong {
-    font-size: 16px;
-    color: #ffffff;
-    font-family: 'Fira Code', monospace;
-}
-
-.stat-row.highlight strong {
-    color: #56d364;
-    text-shadow: 0 0 6px rgba(86, 211, 100, 0.3);
-}
-
-.power-note {
-    font-size: 8px;
-    color: var(--text-secondary);
-    line-height: 1.2;
-    margin-top: 4px;
 }

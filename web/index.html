@@ -3,12 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Low-Power ALU Interactive Dashboard</title>
-    <meta name="description" content="An interactive web dashboard to simulate and visualize a parameterizable Low-Power ALU in Verilog, featuring operand isolation, clock-enable gating, and approximate computing.">
+    <title>Low-Power ALU Advanced Design Space Explorer</title>
+    <meta name="description" content="An advanced interactive VLSI design space exploration dashboard for a Low-Power ALU, showcasing clock gating, operand isolation, PPA analysis, and approximate computing.">
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -16,21 +16,22 @@
         <!-- Header -->
         <header class="app-header">
             <div class="logo-area">
-                <span class="chip-icon">⚡</span>
+                <span class="chip-icon">🎛️</span>
                 <div>
-                    <h1>Low-Power ALU Dashboard</h1>
-                    <p class="subtitle">Verilog RTL Simulation & Power Analysis Interface</p>
+                    <h1>Low-Power ALU Advanced Dashboard</h1>
+                    <p class="subtitle">VLSI Design Space Explorer: Power, Performance, Area & RTL Simulation</p>
                 </div>
             </div>
             <div class="status-tags">
-                <span class="status-tag ver">RTL v1.2</span>
+                <span class="status-tag ver">RTL v2.0 (Dual-Mode)</span>
+                <span class="status-tag pwr" id="status-power-mode">Mode: Active</span>
             </div>
         </header>
 
         <!-- Main Workspace -->
         <main class="app-main">
-            <!-- Sidebar Panel: Control Inputs & Simulation Trigger -->
-            <section class="panel control-panel" id="panel-controls">
+            <!-- Left Column: Controls & PPA Configurator -->
+            <section class="panel control-panel">
                 <div class="panel-header">
                     <h2><span class="icon">⚙️</span> RTL Input Controls</h2>
                 </div>
@@ -44,7 +45,7 @@
                             </label>
                             <div class="switch-label">
                                 <strong>en (Clock Enable)</strong>
-                                <span class="desc">Gates register clocks</span>
+                                <span class="desc">Integrated Clock Gating (ICG)</span>
                             </div>
                         </div>
                         <div class="switch-card">
@@ -54,14 +55,14 @@
                             </label>
                             <div class="switch-label">
                                 <strong>lp_mode</strong>
-                                <span class="desc">Approx ADD & Shift-1</span>
+                                <span class="desc">Approx ADD & Shift-1 Mask</span>
                             </div>
                         </div>
                     </div>
 
                     <!-- Opcode Selection -->
                     <div class="form-group">
-                        <label for="ctrl-opc"><strong>Opcode (OPC[3:0])</strong></label>
+                        <label for="ctrl-opc"><strong>Opcode Select (OPC[3:0])</strong></label>
                         <select id="ctrl-opc">
                             <option value="0">0000: ADD (Addition)</option>
                             <option value="1">0001: SUB (Subtraction)</option>
@@ -84,17 +85,17 @@
 
                     <!-- Inputs A and B -->
                     <div class="form-group">
-                        <label for="ctrl-a"><strong>Operand A (32-bit Hex)</strong></label>
+                        <label for="ctrl-a"><strong>Operand A (Hex)</strong></label>
                         <div class="input-with-selector">
-                            <input type="text" id="ctrl-a" value="1A2B3C4D" placeholder="e.g. 1A2B3C4D">
+                            <input type="text" id="ctrl-a" value="1A2B3C4D">
                             <button type="button" class="btn-rand-input" onclick="randomizeInput('ctrl-a')">🎲</button>
                         </div>
                     </div>
                     
                     <div class="form-group">
-                        <label for="ctrl-b"><strong>Operand B (32-bit Hex)</strong></label>
+                        <label for="ctrl-b"><strong>Operand B (Hex)</strong></label>
                         <div class="input-with-selector">
-                            <input type="text" id="ctrl-b" value="4C3B2A1D" placeholder="e.g. 4C3B2A1D">
+                            <input type="text" id="ctrl-b" value="4C3B2A1D">
                             <button type="button" class="btn-rand-input" onclick="randomizeInput('ctrl-b')">🎲</button>
                         </div>
                     </div>
@@ -103,19 +104,56 @@
                     <div class="actions-area">
                         <button id="btn-clock" class="btn btn-primary">⚡ Trigger Clock Edge</button>
                         <div class="btn-group">
-                            <button id="btn-random" class="btn btn-secondary">🎲 Randomize Stimulus</button>
-                            <button id="btn-reset" class="btn btn-dark">🔄 Reset Sim</button>
+                            <button id="btn-random" class="btn btn-secondary">🎲 Randomize</button>
+                            <button id="btn-reset" class="btn btn-dark">🔄 Reset</button>
                         </div>
+                    </div>
+                </div>
+
+                <!-- PPA Design Space Explorer Panel -->
+                <div class="panel-header border-top">
+                    <h2><span class="icon">📐</span> Design Space Configurator</h2>
+                </div>
+                <div class="panel-body">
+                    <!-- Bit Width Selector -->
+                    <div class="form-group">
+                        <label for="config-width"><strong>Datapath Width</strong></label>
+                        <select id="config-width">
+                            <option value="8">8-bit Datapath</option>
+                            <option value="16">16-bit Datapath</option>
+                            <option value="32" selected>32-bit Datapath (Standard)</option>
+                        </select>
+                    </div>
+
+                    <!-- Adder Architecture -->
+                    <div class="form-group">
+                        <label for="config-adder"><strong>Adder Topology</strong></label>
+                        <select id="config-adder">
+                            <option value="0">Ripple Carry Adder (Low Area)</option>
+                            <option value="1">Carry Lookahead Adder (Low Delay)</option>
+                        </select>
+                    </div>
+
+                    <!-- Clock Frequency Slider -->
+                    <div class="form-group">
+                        <label for="config-freq"><strong>Clock Frequency: <span id="lbl-freq">100</span> MHz</strong></label>
+                        <input type="range" id="config-freq" min="10" max="500" value="100" class="range-slider">
+                    </div>
+
+                    <!-- Approximate LSBs Slider -->
+                    <div class="form-group">
+                        <label for="config-approx"><strong>Approximate LSBs: <span id="lbl-approx">4</span> bits</strong></label>
+                        <input type="range" id="config-approx" min="0" max="16" value="4" class="range-slider">
                     </div>
                 </div>
             </section>
 
-            <!-- Middle Panel: Outputs & Interactive Waveforms -->
+            <!-- Center Column: Outputs, Waveforms & Virtual Console -->
             <section class="main-content">
                 <!-- Outputs & Flags Block -->
                 <div class="panel output-panel">
                     <div class="panel-header">
-                        <h2><span class="icon">💻</span> ALU Registers Output</h2>
+                        <h2><span class="icon">💻</span> ALU Output Registers</h2>
                     </div>
                     <div class="panel-body outputs-grid">
                         <div class="output-card result-card">
@@ -158,22 +196,56 @@
                         <h2><span class="icon">📈</span> Vivado 2023.2 Waveform Viewer (Dynamic)</h2>
                         <span class="time-scale" id="time-indicator">Current Time: 0 ns</span>
                     </div>
-                    <div class="panel-body wave-body-container">
+                    <div class="wave-body-container">
                         <div class="waveform-viewer" id="waveform-viewer">
                             <canvas id="wave-canvas"></canvas>
                         </div>
                     </div>
                 </div>
+
+                <!-- Regression Test Runner Console -->
+                <div class="panel console-panel">
+                    <div class="panel-header console-header">
+                        <h2><span class="icon">🖥️</span> Virtual RTL Regression Console</h2>
+                        <button id="btn-run-tests" class="btn btn-secondary btn-sm">▶️ Run Regression Test Suite</button>
+                    </div>
+                    <div class="panel-body console-body" id="virtual-console">
+                        <div class="console-line system-line">[SYSTEM] Simulation environment ready. Select a configuration or run regression tests.</div>
+                    </div>
+                </div>
             </section>
 
-            <!-- Right Panel: Power Savings & Interactive Logic Schematic -->
+            <!-- Right Column: PPA Statistics, Schematics & Gating visualizer -->
             <section class="panel right-panel">
-                <!-- Power Savings Gauge -->
-                <div class="sub-panel power-panel">
+                <!-- Silicon PPA Dashboard -->
+                <div class="sub-panel stats-panel">
                     <div class="panel-header">
-                        <h2><span class="icon">🔋</span> Dynamic Power Savings Analysis</h2>
+                        <h2><span class="icon">📊</span> PPA (Power-Performance-Area) Dashboard</h2>
                     </div>
-                    <div class="panel-body">
+                    <div class="panel-body ppa-grid">
+                        <div class="ppa-card">
+                            <span class="ppa-label">Timing (Prop. Delay)</span>
+                            <div class="ppa-val" id="ppa-delay">2.45 ns</div>
+                            <span class="ppa-sub" id="ppa-delay-sub">Max Freq: ~408 MHz</span>
+                        </div>
+                        <div class="ppa-card">
+                            <span class="ppa-label">Area (Gate Count)</span>
+                            <div class="ppa-val" id="ppa-area">1,240 GE</div>
+                            <span class="ppa-sub" id="ppa-area-sub">232 cell primitives</span>
+                        </div>
+                        <div class="ppa-card">
+                            <span class="ppa-label">Leakage Power</span>
+                            <div class="ppa-val" id="ppa-leakage">4.21 µW</div>
+                            <span class="ppa-sub" id="ppa-leakage-sub">Static gate leakage</span>
+                        </div>
+                        <div class="ppa-card">
+                            <span class="ppa-label">Power Savings</span>
+                            <div class="ppa-val text-green" id="stat-savings">0%</div>
+                            <span class="ppa-sub" id="stat-power">Current: 145 µW</span>
+                        </div>
+                    </div>
+                    <div class="panel-body border-top-dash">
+                        <!-- Power bars comparison chart -->
                         <div class="power-gauge-area">
                             <div class="power-bar-chart">
                                 <div class="power-bar-wrapper">
@@ -186,24 +258,53 @@
                                 </div>
                                 <div class="power-bar-wrapper">
                                     <div class="bar-container"><div class="bar isolated-bar" id="p-bar-iso"></div></div>
-                                    <span class="bar-lbl">Operand Isolated</span>
+                                    <span class="bar-lbl">Isolated</span>
                                 </div>
                                 <div class="power-bar-wrapper">
                                     <div class="bar-container"><div class="bar optimized-bar" id="p-bar-opt"></div></div>
-                                    <span class="bar-lbl">Gated+Isolated</span>
+                                    <span class="bar-lbl">Optimized</span>
                                 </div>
                             </div>
-                            <div class="power-stats">
-                                <div class="stat-row">
-                                    <span>Current Power consumption:</span>
-                                    <strong id="stat-power">145 µW</strong>
-                                </div>
-                                <div class="stat-row highlight">
-                                    <span>Dynamic Power Reduction:</span>
-                                    <strong id="stat-savings">0%</strong>
-                                </div>
-                                <p class="power-note">*Estimated dynamic switching activity factor \(\alpha\) reduction based on vectors.</p>
-                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Clock Gating Visualizer Schematic -->
+                <div class="sub-panel clock-gating-panel">
+                    <div class="panel-header">
+                        <h2><span class="icon">🌲</span> Animated Clock Tree Gating Visualizer</h2>
+                    </div>
+                    <div class="panel-body clock-body">
+                        <div class="clock-tree-container">
+                            <svg viewBox="0 0 380 120" id="clock-tree-svg">
+                                <!-- Global Clock input -->
+                                <circle cx="30" cy="60" r="4" fill="#00FF66" />
+                                <text x="30" y="80" class="node-txt">CLK_IN</text>
+                                <line x1="34" y1="60" x2="90" y2="60" class="wire-line wire-clk-active" id="clk-wire-in" />
+                                
+                                <!-- Buffer 1 (Clock root) -->
+                                <polygon points="90,45 90,75 115,60" fill="none" stroke="#00FF66" stroke-width="1.5" />
+                                <circle cx="118" cy="60" r="3" fill="#00FF66" />
+                                
+                                <line x1="121" y1="60" x2="180" y2="60" class="wire-line wire-clk-active" id="clk-wire-mid" />
+                                
+                                <!-- Integrated Clock Gate (ICG) Block -->
+                                <rect x="180" y="35" width="60" height="50" rx="3" fill="#13242d" stroke="#FFD700" stroke-width="1.5" id="icg-block" />
+                                <text x="210" y="55" class="node-txt dec-txt" style="font-size: 8px;">ICG (Latch+AND)</text>
+                                <text x="210" y="75" class="node-txt" id="icg-status-text" style="font-size: 8px; fill: #00FF66;">ON</text>
+                                
+                                <!-- Enable input wire to ICG -->
+                                <line x1="210" y1="10" x2="210" y2="35" class="wire-line wire-active" id="clk-wire-en" />
+                                <text x="210" y="25" class="node-txt" style="fill: #FFD700;">en</text>
+
+                                <!-- Output clock wire from ICG -->
+                                <line x1="240" y1="60" x2="300" y2="60" class="wire-line wire-clk-active" id="clk-wire-gated" />
+                                <text x="270" y="50" class="node-txt" id="clk-gated-lbl" style="fill: #00FF66;">Gated CLK</text>
+                                
+                                <!-- Output registers block -->
+                                <rect x="300" y="45" width="50" height="30" rx="2" fill="#2d1818" stroke="#ff7b72" stroke-width="1.5" id="clk-reg-node" />
+                                <text x="325" y="64" class="node-txt" style="font-size: 8px;">ALU Regs</text>
+                            </svg>
                         </div>
                     </div>
                 </div>
@@ -215,72 +316,72 @@
                     </div>
                     <div class="panel-body schematic-body">
                         <div class="schematic-container">
-                            <svg viewBox="0 0 400 350" id="schematic-svg">
+                            <svg viewBox="0 0 400 320" id="schematic-svg">
                                 <!-- Operands Inputs -->
-                                <rect x="10" y="80" width="60" height="30" rx="3" class="schem-node input-node" />
-                                <text x="40" y="100" class="node-txt">A [31:0]</text>
+                                <rect x="10" y="70" width="60" height="30" rx="3" class="schem-node input-node" />
+                                <text x="40" y="90" class="node-txt">A [31:0]</text>
                                 
-                                <rect x="10" y="240" width="60" height="30" rx="3" class="schem-node input-node" />
-                                <text x="40" y="260" class="node-txt">B [31:0]</text>
+                                <rect x="10" y="220" width="60" height="30" rx="3" class="schem-node input-node" />
+                                <text x="40" y="240" class="node-txt">B [31:0]</text>
 
                                 <!-- Opcode Decoder -->
-                                <rect x="120" y="15" width="80" height="30" rx="3" class="schem-node decoder-node" />
-                                <text x="160" y="34" class="node-txt dec-txt">OPC Decoder</text>
+                                <rect x="120" y="10" width="80" height="25" rx="3" class="schem-node decoder-node" />
+                                <text x="160" y="26" class="node-txt dec-txt">OPC Decoder</text>
 
                                 <!-- Gates / Isolation Blocks -->
                                 <g id="gate-adder">
-                                    <line x1="70" y1="95" x2="160" y2="95" class="wire-line wire-iso" id="wire-a-add" />
-                                    <line x1="70" y1="245" x2="160" y2="245" class="wire-line wire-iso" id="wire-b-add" />
-                                    <rect x="160" y="80" width="80" height="40" rx="3" class="schem-node functional-node isolated" id="node-adder" />
-                                    <text x="200" y="105" class="node-txt">Adder/Sub</text>
+                                    <line x1="70" y1="85" x2="160" y2="85" class="wire-line wire-iso" id="wire-a-add" />
+                                    <line x1="70" y1="225" x2="160" y2="225" class="wire-line wire-iso" id="wire-b-add" />
+                                    <rect x="160" y="70" width="80" height="35" rx="3" class="schem-node functional-node isolated" id="node-adder" />
+                                    <text x="200" y="92" class="node-txt">Adder/Sub</text>
                                 </g>
 
                                 <g id="gate-logic">
-                                    <line x1="70" y1="95" x2="160" y2="155" class="wire-line wire-iso" id="wire-a-log" />
-                                    <line x1="70" y1="245" x2="160" y2="175" class="wire-line wire-iso" id="wire-b-log" />
-                                    <rect x="160" y="145" width="80" height="40" rx="3" class="schem-node functional-node isolated" id="node-logic" />
-                                    <text x="200" y="170" class="node-txt">Logic Unit</text>
+                                    <line x1="70" y1="85" x2="160" y2="135" class="wire-line wire-iso" id="wire-a-log" />
+                                    <line x1="70" y1="225" x2="160" y2="155" class="wire-line wire-iso" id="wire-b-log" />
+                                    <rect x="160" y="125" width="80" height="35" rx="3" class="schem-node functional-node isolated" id="node-logic" />
+                                    <text x="200" y="147" class="node-txt">Logic Unit</text>
                                 </g>
 
                                 <g id="gate-shifter">
-                                    <line x1="70" y1="95" x2="160" y2="215" class="wire-line wire-iso" id="wire-a-sh" />
-                                    <line x1="70" y1="255" x2="160" y2="235" class="wire-line wire-iso" id="wire-b-sh" />
-                                    <rect x="160" y="210" width="80" height="40" rx="3" class="schem-node functional-node isolated" id="node-shifter" />
-                                    <text x="200" y="235" class="node-txt">Shifter</text>
+                                    <line x1="70" y1="85" x2="160" y2="190" class="wire-line wire-iso" id="wire-a-sh" />
+                                    <line x1="70" y1="235" x2="160" y2="210" class="wire-line wire-iso" id="wire-b-sh" />
+                                    <rect x="160" y="180" width="80" height="35" rx="3" class="schem-node functional-node isolated" id="node-shifter" />
+                                    <text x="200" y="202" class="node-txt">Shifter</text>
                                 </g>
 
                                 <g id="gate-comparator">
-                                    <line x1="70" y1="95" x2="160" y2="285" class="wire-line wire-iso" id="wire-a-comp" />
-                                    <line x1="70" y1="255" x2="160" y2="295" class="wire-line wire-iso" id="wire-b-comp" />
-                                    <rect x="160" y="275" width="80" height="40" rx="3" class="schem-node functional-node isolated" id="node-comparator" />
-                                    <text x="200" y="300" class="node-txt">Comparator</text>
+                                    <line x1="70" y1="85" x2="160" y2="245" class="wire-line wire-iso" id="wire-a-comp" />
+                                    <line x1="70" y1="235" x2="160" y2="265" class="wire-line wire-iso" id="wire-b-comp" />
+                                    <rect x="160" y="235" width="80" height="35" rx="3" class="schem-node functional-node isolated" id="node-comparator" />
+                                    <text x="200" y="257" class="node-txt">Comparator</text>
                                 </g>
 
                                 <!-- Output Multiplexer -->
-                                <polygon points="300,70 300,310 330,260 330,120" class="schem-node mux-node" />
-                                <text x="315" y="195" class="node-txt vertical-txt">Y-MUX</text>
+                                <polygon points="300,60 300,280 325,230 325,110" class="schem-node mux-node" />
+                                <text x="312" y="170" class="node-txt vertical-txt">Y-MUX</text>
 
                                 <!-- Connection from blocks to MUX -->
-                                <line x1="240" y1="100" x2="300" y2="100" class="wire-line wire-iso" id="wire-out-add" />
-                                <line x1="240" y1="165" x2="300" y2="165" class="wire-line wire-iso" id="wire-out-log" />
-                                <line x1="240" y1="230" x2="300" y2="230" class="wire-line wire-iso" id="wire-out-sh" />
-                                <line x1="240" y1="295" x2="300" y2="295" class="wire-line wire-iso" id="wire-out-comp" />
+                                <line x1="240" y1="87" x2="300" y2="87" class="wire-line wire-iso" id="wire-out-add" />
+                                <line x1="240" y1="142" x2="300" y2="142" class="wire-line wire-iso" id="wire-out-log" />
+                                <line x1="240" y1="197" x2="300" y2="197" class="wire-line wire-iso" id="wire-out-sh" />
+                                <line x1="240" y1="252" x2="300" y2="252" class="wire-line wire-iso" id="wire-out-comp" />
 
                                 <!-- Mux Output wire to register -->
-                                <line x1="320" y1="190" x2="350" y2="190" class="wire-line wire-iso" id="wire-mux-out" />
-                                <rect x="350" y="175" width="40" height="30" rx="2" class="schem-node reg-node" id="node-reg" />
-                                <text x="370" y="195" class="node-txt">Reg</text>
+                                <line x1="312" y1="170" x2="345" y2="170" class="wire-line wire-iso" id="wire-mux-out" />
+                                <rect x="345" y="152" width="40" height="30" rx="2" class="schem-node reg-node" id="node-reg" />
+                                <text x="365" y="171" class="node-txt">Reg</text>
                                 
                                 <!-- Decoder Enable control wires to functional switches -->
-                                <path d="M 160,45 L 160,70" class="ctrl-wire-line" />
-                                <path d="M 170,45 L 170,135" class="ctrl-wire-line" />
-                                <path d="M 180,45 L 180,200" class="ctrl-wire-line" />
-                                <path d="M 190,45 L 190,265" class="ctrl-wire-line" />
+                                <path d="M 160,35 L 160,65" class="ctrl-wire-line" />
+                                <path d="M 170,35 L 170,120" class="ctrl-wire-line" />
+                                <path d="M 180,35 L 180,175" class="ctrl-wire-line" />
+                                <path d="M 190,35 L 190,230" class="ctrl-wire-line" />
                             </svg>
                         </div>
                         <div class="legend">
-                            <span class="legend-item"><span class="legend-dot active"></span> Active switching (Toggling)</span>
-                            <span class="legend-item"><span class="legend-dot idle"></span> Isolated (Zero/Static)</span>
+                            <span class="legend-item"><span class="legend-dot active"></span> Toggling</span>
+                            <span class="legend-item"><span class="legend-dot idle"></span> Isolated (Idle)</span>
                         </div>
                     </div>
                 </div>
