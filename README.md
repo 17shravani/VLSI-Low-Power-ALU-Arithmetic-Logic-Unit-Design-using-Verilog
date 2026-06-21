@@ -1,4 +1,5 @@
 # Low-Power ALU (Arithmetic Logic Unit) Design in Verilog
+<img width="1911" height="901" alt="Screenshot 2026-06-21 155832" src="https://github.com/user-attachments/assets/fcc1c071-0abd-4051-a980-50acdcee210e" />
 
 [![Language](https://img.shields.io/badge/Language-Verilog%20%2F%20SystemVerilog-blue.svg)](https://en.wikipedia.org/wiki/Verilog)
 [![Toolchain](https://img.shields.io/badge/Toolchain-Vivado%20%2F%20ModelSim%20%2F%20Icarus-orange.svg)](https://www.xilinx.com/products/design-tools/vivado.html)
